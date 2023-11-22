@@ -1,0 +1,14 @@
+18:15:42 **** Incremental Build of configuration Debug for project blth_again ****
+make -j7 all 
+arm-none-eabi-size   blth_again.elf 
+   text	   data	    bss	    dec	    hex	filename
+  11884	     28	   1844	  13756	   35bc	blth_again.elf
+Finished building: default.size.stdout
+ 
+18:16:15 **** Incremental Build of configuration Debug for project blth_again ****
+make -j7 all 
+arm-none-eabi-size   blth_again.elf 
+   text	   data	    bss	    dec	    hex	filename
+  11884	     28	   1844	  13756	   35bc	blth_again.elf
+Finished building: default.size.stdout
+ 
