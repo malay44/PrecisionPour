@@ -1229,3 +1229,4 @@
 2023-11-22 18:20:17,219 [INFO] CADModel:165 - CPN selected for project levelSTM32F070RBT6
 2023-11-22 18:20:17,221 [INFO] CADModel:114 - Register for checkConnection events
 2023-11-22 18:20:17,277 [INFO] OpenFileManager:328 - Restore cursor
+2023-11-22 18:36:37,397 [INFO] NvicIntPanel:101 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,450x130,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
