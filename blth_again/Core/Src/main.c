@@ -301,35 +301,58 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 
-int rxInteger = 0;
-uint8_t rxIndex = 0;
+float rxFloat = 0.0;
+_Bool decimalPointEncountered = 0;
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-  if(huart->Instance==USART1)
-  {
-    if(rxData!='\n') // Ascii value of 'N' is 78 (N for NO)
+    if (huart->Instance == USART1)
     {
-//    	rxString[rxIndex++] = rxData;
-    	if((rxData >= '0' && rxData <= '9') || rxData == '.'){
-    		rxInteger = rxInteger*10 + (rxData - '0');
-    	}
-//    	HAL_UART_Transmit(&huart1, (uint8_t *)&rxData, 1, 10);
-//    	rxIndex++;
-    	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, 0);
+        if (rxData != '\n') // Ascii value of 'N' is 78 (N for NO)
+        {
+            // Check if the received character is a digit or a decimal point
+            if ((rxData >= '0' && rxData <= '9') || rxData == '.')
+            {
+                if (rxData == '.')
+                {
+                    if (!decimalPointEncountered)
+                    {
+                        decimalPointEncountered = 1;
+                    }
+                    else
+                    {
+                        // Handle the case where a second decimal point is encountered
+                        // (you may want to set an error flag or take appropriate action)
+                    }
+                }
+                else
+                {
+                    rxFloat = rxFloat * 10.0 + (rxData - '0');
+                    if (decimalPointEncountered)
+                    {
+                        // Adjust for decimal places
+                        rxFloat /= 10.0;
+                    }
+                }
+            }
+
+            // Your other code goes here
+        }
+        else // Ascii value of 'Y' is 89 (Y for YES)
+        {
+            char buffer[20];  // Adjust the buffer size as needed
+            sprintf(buffer, "%.2f\n", rxFloat);  // %.2f limits the output to 2 decimal places
+
+            // Transmit the float value
+            HAL_UART_Transmit(&huart1, (uint8_t *)buffer, strlen(buffer), 10);
+
+//            dispense(rxFloat);
+            rxFloat = 0.0;  // Reset the float value
+            decimalPointEncountered = 0;  // Reset the flag
+        }
+
+        HAL_UART_Receive_IT(&huart1, &rxData, 1); // Enable interrupt receive again
     }
-    else // Ascii value of 'Y' is 89 (Y for YES)
-    {
-//    	HAL_UART_Transmit(&huart1, (uint8_t *)"received the data \n", 20, 10);
-//    	int x = atoi(rxString);
-    	char buffer[12];
-    	sprintf(buffer, "%d\n", rxInteger);
-    	HAL_UART_Transmit(&huart1, (uint8_t *)buffer, 3, 10);
-//    	dispense(rxInteger);
-    	rxInteger = 0;
-    }
-    HAL_UART_Receive_IT(&huart1,&rxData,1); // Enabling interrupt receive again
-  }
 }
 
 /* USER CODE END 4 */
