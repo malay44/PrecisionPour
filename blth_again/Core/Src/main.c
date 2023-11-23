@@ -22,6 +22,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "string.h"
+#include <stdlib.h>
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -31,6 +33,9 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define EN        8
+#define X_DIR     6
+#define X_STP     3
 
 /* USER CODE END PD */
 
@@ -46,6 +51,8 @@ UART_HandleTypeDef huart2;
 /* USER CODE BEGIN PV */
 uint8_t tx_buffer[8] = "hehe\n";
 uint8_t rxData;
+int delayTime = 2000; // velocidad
+unsigned long K = 5446;
 
 /* USER CODE END PV */
 
@@ -60,6 +67,24 @@ static void MX_USART1_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+void blink(int num){
+	while(num--){
+		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+		HAL_Delay(1000);
+	}
+}
+
+void dispense(float ml){
+	unsigned long stepsml = ml*K;
+	  HAL_Delay(100);
+	  for (unsigned long i = 0; i < stepsml; i++) {
+		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, SET);
+		  HAL_Delay(delayTime);
+		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, RESET);
+		  HAL_Delay(delayTime);
+	  }
+}
 
 /* USER CODE END 0 */
 
@@ -100,13 +125,15 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  HAL_UART_Transmit(&huart1, (uint8_t *)"Enter ML:- ", 11, HAL_MAX_DELAY);
+//  HAL_UART_Transmit(&huart1, (uint8_t *)123, 3, 10);
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  HAL_UART_Transmit(&huart1, (uint8_t *)"Here\n", 5, HAL_MAX_DELAY);
-	  HAL_Delay(1000);
+//	  HAL_UART_Transmit(&huart1, (uint8_t *)"Here\n", 5, HAL_MAX_DELAY);
+//	  HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 }
@@ -240,9 +267,13 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOF_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
@@ -257,23 +288,45 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
 
+  /*Configure GPIO pin : PB3 */
+  GPIO_InitStruct.Pin = GPIO_PIN_3;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
 
+int rxInteger = 0;
+uint8_t rxIndex = 0;
+
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-  if(huart->Instance==USART2)
+  if(huart->Instance==USART1)
   {
-    if(rxData==78) // Ascii value of 'N' is 78 (N for NO)
+    if(rxData!='\n') // Ascii value of 'N' is 78 (N for NO)
     {
+//    	rxString[rxIndex++] = rxData;
+    	if((rxData >= '0' && rxData <= '9') || rxData == '.'){
+    		rxInteger = rxInteger*10 + (rxData - '0');
+    	}
+//    	HAL_UART_Transmit(&huart1, (uint8_t *)&rxData, 1, 10);
+//    	rxIndex++;
     	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, 0);
     }
-    else if (rxData==89) // Ascii value of 'Y' is 89 (Y for YES)
+    else // Ascii value of 'Y' is 89 (Y for YES)
     {
-    	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, 1);
+//    	HAL_UART_Transmit(&huart1, (uint8_t *)"received the data \n", 20, 10);
+//    	int x = atoi(rxString);
+    	char buffer[12];
+    	sprintf(buffer, "%d\n", rxInteger);
+    	HAL_UART_Transmit(&huart1, (uint8_t *)buffer, 3, 10);
+//    	dispense(rxInteger);
+    	rxInteger = 0;
     }
     HAL_UART_Receive_IT(&huart1,&rxData,1); // Enabling interrupt receive again
   }

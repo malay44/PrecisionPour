@@ -60,8 +60,8 @@ all: main-build
 main-build: blth_again.elf secondary-outputs
 
 # Tool invocations
-blth_again.elf blth_again.map: $(OBJS) $(USER_OBJS) /Users/malaypatel/STM32CubeIDE/workspace_1.13.2/new_beginning/blth_again/STM32F070RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "blth_again.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0 -T"/Users/malaypatel/STM32CubeIDE/workspace_1.13.2/new_beginning/blth_again/STM32F070RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="blth_again.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+blth_again.elf blth_again.map: $(OBJS) $(USER_OBJS) C:\Users\shrey\Desktop\STM32\blth_again\STM32F070RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "blth_again.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0 -T"C:\Users\shrey\Desktop\STM32\blth_again\STM32F070RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="blth_again.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
