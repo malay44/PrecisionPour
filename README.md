@@ -1,6 +1,5 @@
 ![Precise fluid dispenser_page-0001](https://github.com/malay44/PrecisionPour/assets/101856674/696fe6fc-a02b-4525-93aa-d23125e78fcd)
 ![Precise fluid dispenser_page-0002](https://github.com/malay44/PrecisionPour/assets/101856674/3f73ae7d-84e6-4c56-b426-e0ae1ba4972c)
-![Precise fluid dispenser_page-0003](https://github.com/malay44/PrecisionPour/assets/101856674/0b437a2a-c754-4e40-ac78-e8e86ff72fc0)
 ![Precise fluid dispenser_page-0004](https://github.com/malay44/PrecisionPour/assets/101856674/833bf398-7f4e-4a5d-bda3-a59350e5479a)
 ![Precise fluid dispenser_page-0005](https://github.com/malay44/PrecisionPour/assets/101856674/e2e2bc4d-2047-467a-91a7-bf4ec5b11b82)
 ![Precise fluid dispenser_page-0006](https://github.com/malay44/PrecisionPour/assets/101856674/e62f3b54-b90d-4255-a836-27520df5f773)
